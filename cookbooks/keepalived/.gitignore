@@ -1,0 +1,7 @@
+.*
+!.gitignore
+.bundle
+.cache
+.kitchen
+bin
+metadata.json

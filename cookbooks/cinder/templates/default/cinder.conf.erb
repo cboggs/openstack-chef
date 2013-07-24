@@ -1,0 +1,19 @@
+[DEFAULT]
+osapi_volume_listen = <%= @cinder_api_listen_ip %>
+logdir = /var/log/cinder
+state_path = /var/lib/cinder
+lock_path = /var/lib/cinder/tmp
+volumes_dir = /etc/cinder/volumes
+iscsi_helper = tgtadm
+sql_connection = mysql://<%= @db_user %>:<%= @db_password %>@<%= @db_ip_address %>/<%= @db_name %>
+rpc_backend = cinder.openstack.common.rpc.impl_qpid
+rootwrap_config = /etc/cinder/rootwrap.conf
+
+[keystone_authtoken]
+admin_tenant_name = %SERVICE_TENANT_NAME%
+admin_user = %SERVICE_USER%
+admin_password = %SERVICE_PASSWORD%
+auth_host = 127.0.0.1
+auth_port = 35357
+auth_protocol = http
+signing_dirname = /tmp/keystone-signing-cinder
