@@ -73,7 +73,7 @@ end
 service "nova-conductor" do
   service_name platform_options["nova_conductor_service"]
   supports :status => true, :restart => true
-  action :enable
+  action [ :enable, :start ]
 end
 
 service "nova-compute" do
