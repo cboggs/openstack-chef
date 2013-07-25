@@ -1,0 +1,66 @@
+{
+  "name": "local-dev",
+  "description": "Chef-server example environment",
+  "cookbook_versions": {
+  },
+  "json_class": "Chef::Environment",
+  "chef_type": "environment",
+  "default_attributes": {
+  },
+  "override_attributes": {
+    "openstack": {
+      "developer_mode": false
+    },
+    "monitoring": {
+      "metric_provider": "none",
+      "procmon_provider": "none"
+    },
+    "glance": {
+      "image_upload": false,
+      "images": [
+        "cirros",
+        "precise"
+      ]
+    },
+    "nova": {
+      "ratelimit": {
+        "api": {
+          "enabled": true
+        },
+        "volume": {
+          "enabled": true
+        }
+      },
+      "libvirt": {
+        "virt_type": "qemu"
+      },
+      "networks": [
+        {
+          "label": "testing_net",
+          "ipv4_cidr": "172.16.2.0/24",
+          "num_networks": "1",
+          "network_size": "255",
+          "bridge": "br100"
+        }
+      ]
+    },
+    "mysql": {
+      "allow_remote_root": true,
+      "root_network_acl": "%"
+    },
+    "osops_networks": {
+      "nova": "172.16.1.0/24",
+      "public": "172.16.1.0/24",
+      "management": "172.16.1.0/24"
+    },
+    "keystone": {
+      "syslog": {
+        "use": false
+      }
+    },
+    "package_component": "grizzly",
+    "keepalived": {
+      "shared_address": true
+    }
+  }
+}
