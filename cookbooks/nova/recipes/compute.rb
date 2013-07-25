@@ -63,6 +63,12 @@ cookbook_file "/etc/nova/nova-compute.conf" do
   not_if { node["nova"]["network"]["provider"] == "quantum" }
 end
 
+directory "/var/lib/nova/.ssh" do
+  owner "nova"
+  group "nova"
+  mode 0700
+end
+
 template "/var/lib/nova/.ssh/config" do
   source "libvirtd-ssh-config"
   owner "nova"

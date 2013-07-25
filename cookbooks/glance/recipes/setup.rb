@@ -38,12 +38,6 @@ directory "/var/log/glance" do
   recursive true
 end
 
-file "/var/log/glance/registry.log" do
-  owner "glance"
-  group "glance"
-  mode 00777
-end
-
 # make sure we die if there are glance-setups other than us
 if get_role_count("glance-setup", false) > 0
   Chef::Application.fatal! "You can only have one node with the glance-setup role"
@@ -93,6 +87,12 @@ platform_options["glance_packages"].each do |pkg|
     action :install
     options platform_options["package_overrides"]
   end
+end
+
+file "/var/log/glance/registry.log" do
+  owner "glance"
+  group "glance"
+  mode 00777
 end
 
 file "/var/lib/glance/glance.sqlite" do
