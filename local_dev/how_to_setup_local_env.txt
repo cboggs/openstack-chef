@@ -1,0 +1,32 @@
+1). Fork git repo here: https://github.com/cbechberger/openstack-chef 
+
+2). Configure Chef (you can use a free hosted account)
+
+3). Upload cookbooks/roles/environment, change to dir where you checked out the code
+	- knife cookbook upload -o ./cookbooks --all
+	- knife role from file roles/*.rb
+	- knife environment from file environments/local-dev
+
+4). install vagrant 
+	- Download from http://www.vagrantup.com/
+
+5). Start cluster, from ~/openstack-chef/local_dev
+	- vagrant up
+
+
+Notes:
+-------------------------------------------------------------
+
+* Vagrant
+
+To rerun chef - vagrant provision <optional vm name>
+
+To reload configuration - vagrant reload <optional vm name>
+
+To destroy VM's - vagrant destroy <optional vm name>
+
+* Chef
+
+To upload updated cookbook (from ~/openstack-chef) - knife cookbook upload -o ./cookbooks <cookbook name>
+
+

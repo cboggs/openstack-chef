@@ -1,0 +1,110 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define :oscontroller do |oscontroller_config|
+    # Every Vagrant virtual environment requires a box to build off of.
+    oscontroller_config.vm.box = "CentOS6.4"
+
+    # If the box doesn't exist on our system download it from here
+    oscontroller_config.vm.box_url = 'http://puppet-vagrant-boxes.puppetlabs.com/centos-64-x64-vbox4210.box'
+
+    # Configure some virutalbox specific settings
+    oscontroller_config.vm.provider "virtualbox" do |v|
+      v.gui = true
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+      v.customize ["modifyvm", :id, "--nic2", "null"]
+    end
+
+    # Set the hostname
+    oscontroller_config.vm.hostname = "ld-oscontroller-01"
+
+    # Use bridged mode networking
+    oscontroller_config.vm.network :private_network, ip: "172.16.1.10"
+
+    # Configure port forwarding for access to horizon dashboard
+    oscontroller_config.vm.network :forwarded_port, guest: 80, host: 8080, adaptor: 2
+    oscontroller_config.vm.network :forwarded_port, guest: 443, host: 8443, adaptor: 2
+
+    # Disable IPtables
+    oscontroller_config.vm.provision :shell,
+      :inline => "service iptables stop; chkconfig iptables off"
+
+    # Provision the box using hosted chef
+    user = ENV['OPSCODE_USER'] || ENV['USER']
+    oscontroller_config.vm.provision :chef_client do |chef|
+
+      # Configure hosted chef settings
+      chef.chef_server_url = "https://api.opscode.com/organizations/#{ENV['ORGNAME']}"
+      chef.validation_key_path = "#{ENV['HOME']}/.chef/#{ENV['ORGNAME']}-validator.pem"
+      chef.validation_client_name = "#{ENV['ORGNAME']}-validator"
+
+      # Put the client.rb in /etc/chef so chef-client can be run w/o specifying
+      chef.provisioning_path = "/etc/chef"
+
+      # logging
+      chef.log_level = :info
+
+      # Set the environment
+      chef.environment = "local-dev"
+
+      # adjust the run list to suit your testing needs
+      chef.run_list = [
+        "role[single-controller]"
+      ]
+    end
+  end
+
+  config.vm.define :oscompute do |oscompute_config|
+    # Every Vagrant virtual environment requires a box to build off of.
+    oscompute_config.vm.box = "CentOS6.4"
+
+    # If the box doesn't exist on our system download it from here
+    oscompute_config.vm.box_url = 'http://puppet-vagrant-boxes.puppetlabs.com/centos-64-x64-vbox4210.box'
+
+    # Configure some virutalbox specific settings
+    oscompute_config.vm.provider "virtualbox" do |v|
+      v.gui = true
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+    end
+
+    # Set the hostname
+    oscompute_config.vm.hostname = "ld-oscompute-01"
+
+    # Use bridged mode networking
+    oscompute_config.vm.network :private_network, ip: "172.16.1.20"
+
+    # Disable IPtables
+    oscompute_config.vm.provision :shell,
+      :inline => "service iptables stop; chkconfig iptables off"
+
+    # Provision the box using hosted chef
+    user = ENV['OPSCODE_USER'] || ENV['USER']
+    oscompute_config.vm.provision :chef_client do |chef|
+
+      # Configure hosted chef settings
+      chef.chef_server_url = "https://api.opscode.com/organizations/#{ENV['ORGNAME']}"
+      chef.validation_key_path = "#{ENV['HOME']}/.chef/#{ENV['ORGNAME']}-validator.pem"
+      chef.validation_client_name = "#{ENV['ORGNAME']}-validator"
+
+      # Put the client.rb in /etc/chef so chef-client can be run w/o specifying
+      chef.provisioning_path = "/etc/chef"
+
+      # logging
+      chef.log_level = :info
+
+      # Set the environment
+      chef.environment = "local-dev"
+
+      # adjust the run list to suit your testing needs
+      chef.run_list = [
+        "role[single-compute]"
+      ]
+    end
+  end
+end
