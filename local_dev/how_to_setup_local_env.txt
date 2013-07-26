@@ -1,8 +1,10 @@
 1). Fork git repo here: https://github.com/cbechberger/openstack-chef 
 
 2). Configure Chef (you can use a free hosted account)
+	- Follow Opscode instructions for installing/configuring your workstation
 
-3). Upload cookbooks/roles/environment, change to dir where you checked out the code
+3). Upload cookbooks/roles/environment
+	- cd openstack-chef
 	- knife cookbook upload -o ./cookbooks --all
 	- knife role from file roles/*.rb
 	- knife environment from file environments/local-dev
@@ -10,7 +12,8 @@
 4). install vagrant 
 	- Download from http://www.vagrantup.com/
 
-5). Start cluster, from ~/openstack-chef/local_dev
+5). Start cluster, from
+	- cd local_dev
 	- vagrant up
 
 
