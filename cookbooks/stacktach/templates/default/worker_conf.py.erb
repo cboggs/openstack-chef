@@ -1,0 +1,16 @@
+# This file is written by Chef. DO NOT CHANGE directly. Your
+# changes will be overwritten the next time chef-client runs!
+
+DEPLOYMENTS = [
+<%- @deployments.each do | deployment | -%>
+    dict(
+        tenant_id=<%= deployment["tenant_id"] %>, # This is the stacktach tenant, not an openstack tenant
+        name="<%= deployment["name"] %>", # A name for the deployment
+        url="<%= deployment["stacktach_uri"] %>", # The url for the base of the django app
+        rabbit_host="<%= deployment["rabbit_host"] %>", # ip/host name of the amqp server to listen to
+        rabbit_port=<%= deployment["rabbit_port"] %>,
+        rabbit_userid="<%= deployment["rabbit_user"] %>",
+        rabbit_password="<%= deployment["rabbit_password"] %>",
+        rabbit_virtual_host="<%= deployment["rabbit_vhost"] %>"),
+<% end -%>
+]
